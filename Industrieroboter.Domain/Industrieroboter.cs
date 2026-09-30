@@ -62,5 +62,23 @@ namespace Industrieroboter.Domain
                 return true;
             }
         }
+
+        public void werkzeugAnzeigen()
+        {
+            for (int i = 0; i < maxAnzWerkzeuge; i++)
+            {
+                Werkzeug? w = werkzeugKasten[i];
+
+                if (w != null)
+                {
+                    Console.Write($"Platz {i}: ");
+                    w.ausgeben();
+                }
+                else
+                {
+                    Console.WriteLine($"Platz {i}: leer");
+                }
+            }
+        }
     }
 }
