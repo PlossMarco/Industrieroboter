@@ -80,5 +80,59 @@ namespace Industrieroboter.Domain
                 }
             }
         }
+
+        public void werkzeugBenutzen(int platz, int wert)
+        {
+            if (!(platz >= 0 && platz < maxAnzWerkzeuge))
+            {
+                Console.WriteLine($"Benutzen nicht möglich, da Platz {platz} nicht existiert.");
+
+                return;
+            }
+
+            Werkzeug? w = werkzeugKasten[platz];
+
+            if (w == null)
+            {
+                Console.WriteLine($"Benutzen nicht möglich, da Platz {platz} nicht belegt ist.");
+
+                return;
+            }
+            else
+            {
+                Console.Write($"Benutzes Werkzeug von Platz {platz}: ");
+                w.benutzen(wert);
+                w.ausgeben();
+
+                return;
+            }
+        }
+
+        public void werkzeugWarten(int platz)
+        {
+            if (!(platz >= 0 && platz < maxAnzWerkzeuge))
+            {
+                Console.WriteLine($"Warten nicht möglich, da Platz {platz} nicht existiert.");
+
+                return;
+            }
+
+            Werkzeug? w = werkzeugKasten[platz];
+
+            if (w == null)
+            {
+                Console.WriteLine($"Warten nicht möglich, da Platz {platz} nicht belegt ist.");
+
+                return;
+            }
+            else
+            {
+                Console.Write($"Gewartetes Werkzeug von Platz {platz}: ");
+                w.warten();
+                w.ausgeben();
+
+                return;
+            }
+        }
     }
 }

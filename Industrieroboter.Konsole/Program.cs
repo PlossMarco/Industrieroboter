@@ -11,32 +11,33 @@ do
 
     switch (menueAuswahl)
     {
-        case 1:
+        case 1:                             // Hinzufügen
             WerkzeugHinzufuegenMenue();
             break;
-        case 2:
-            int platz = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
-            industrieroboter1.werkzeugEntfernen(platz);
+        case 2:                             // Entfernen
+            int platzEntfernen = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
+            industrieroboter1.werkzeugEntfernen(platzEntfernen);
             break;
-        case 3:
+        case 3:                             // Anzeigen
             industrieroboter1.werkzeugAnzeigen();
             break;
 
-        case 4:
-            // Benutzen();
-            Console.WriteLine("Kommt noch!");
+        case 4:                             // Benutzen
+            int platzBenutzen = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
+            int wert = ZahlEinlesen("Wählen Sie den Verschleiss (0 - 100)");
+            industrieroboter1.werkzeugBenutzen(platzBenutzen, wert);
             break;
 
-        case 5:
-            // Warten();
-            Console.WriteLine("Kommt noch!");
+        case 5:                             // Warten
+            int platzWarten = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
+            industrieroboter1.werkzeugWarten(platzWarten);
             break;
 
-        case 6:
+        case 6:                             // Beenden
             checkMenue = false;
             break;
 
-        case 7:
+        case 7:                             // Testprogramm
             Testprogramm();
             break;
 

@@ -11,6 +11,21 @@ public abstract class Werkzeug
         this.art = art;
         this.verschleiss = verschleiss;
     }
+    public void benutzen(int wert)
+    {
+
+            if (wert < 0)
+            {
+                Console.WriteLine("Der Verschleiss muss im positiven Bereich liegen!");
+                return;
+            }
+        verschleiss = Math.Min(verschleiss + wert, 100);
+    }
+
+    public void warten()
+    {
+        verschleiss = 0;
+    }
 }
 
 public class Bohrer : Werkzeug 
@@ -47,4 +62,5 @@ public class Schweisser : Werkzeug
     {
         Console.WriteLine($"Schweisser (Verschleiss {verschleiss} %).");
     }
+
 }
