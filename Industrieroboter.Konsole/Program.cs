@@ -15,6 +15,8 @@ do
             WerkzeugHinzufuegenMenue();
             break;
         case 2:
+            int platz = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
+            industrieroboter1.werkzeugEntfernen(platz);
             break;
         case 3:
             industrieroboter1.werkzeugAnzeigen();
