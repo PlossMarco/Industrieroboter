@@ -10,10 +10,11 @@ namespace Industrieroboter.Domain
     public class Industrieroboter
     {
         private static readonly int maxAnzWerkzeuge = 10;
-        private Werkzeug[] werkzeugKasten = new Werkzeug[maxAnzWerkzeuge];
+        private Werkzeug?[] werkzeugKasten = new Werkzeug[maxAnzWerkzeuge];
 
         public bool werkzeugHinzufuegen(int platz, Werkzeug neu)
         {
+
             if (!(platz >= 0 && platz < maxAnzWerkzeuge))
             {
                 Console.WriteLine($"Hinzufügen nicht möglich, da Platz {platz} nicht existiert.");
@@ -43,7 +44,10 @@ namespace Industrieroboter.Domain
 
                 return false;
             }
-            else if (werkzeugKasten[platz] == null)
+
+            Werkzeug? w = werkzeugKasten[platz];
+
+            if (w == null)
             {
                 Console.WriteLine($"Entfernen nicht möglich, da Platz {platz} nicht belegt ist.");
 
@@ -52,7 +56,7 @@ namespace Industrieroboter.Domain
             else
             {
                 Console.Write($"Entferntes Werkzeug auf Platz {platz}: ");
-                werkzeugKasten[platz].ausgeben();
+                w.ausgeben();
                 werkzeugKasten[platz] = null;
 
                 return true;
