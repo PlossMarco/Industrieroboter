@@ -1,34 +1,21 @@
 ﻿using Industrieroboter.Domain;
 
 bool checkMenue = true;
-string? userInput;
-int auswahl;
 
 Industrieroboter.Domain.Industrieroboter industrieroboter1 = new Industrieroboter.Domain.Industrieroboter();
 
 do
 {
-    Console.WriteLine("1 - ");
-    Console.WriteLine("2 - ");
-    Console.WriteLine("3 - Anzeigen");
-    Console.WriteLine("4 - Benutzen");
-    Console.WriteLine("5 - Warten");
-    Console.WriteLine("6 - Beenden");
-    Console.WriteLine("7 - Testprogramm");
+    Console.WriteLine("=== Werkzeugkasten-Verwaltung ===");
+    int menueAuswahl = ZahlEinlesen("1 = Hinzufügen | 2 = Entfernen | 3 = Anzeigen | 4 = Benutzen | 5 = Warten | 6 = Beenden | 7 = Testprogramm");
 
-    userInput = Console.ReadLine();
-    int.TryParse(userInput, out auswahl);
-
-    switch (auswahl)
+    switch (menueAuswahl)
     {
         case 1:
-            Console.WriteLine("Kommt noch!");
+            WerkzeugHinzufuegenMenue();
             break;
-
         case 2:
-            Console.WriteLine("Kommt noch!");
             break;
-
         case 3:
             industrieroboter1.werkzeugAnzeigen();
             break;
@@ -74,4 +61,60 @@ void Testprogramm() {
     industrieroboter1.werkzeugEntfernen(5);
     industrieroboter1.werkzeugEntfernen(10);
     industrieroboter1.werkzeugEntfernen(-1);
+}
+
+void WerkzeugHinzufuegenMenue()
+{
+    int platz = ZahlEinlesen("Geben Sie den Platz ein, an dem Sie das gewünschte Werkzeug hinzufügen möchten (0 - 9)");
+
+    int artAuswahl = ZahlEinlesen("Wählen Sie die Art des Werkzeuges 1 = Bohrer | 2 = Greifer | 3 = Schweisser");
+
+    Werkzeug? neu = null;
+
+    switch (artAuswahl)
+    {
+        case 1:
+            int groesse = ZahlEinlesen("Geben Sie die Größe des Bohrers ein (1 - 10).");
+            neu = new Bohrer("bohrer", 0, groesse);
+
+            break;
+
+        case 2:
+            neu = new Greifer("greifer", 0);
+
+            break;
+
+        case 3:
+            neu = new Schweisser("schweisser", 0);
+
+            break;
+
+        default:
+            Console.WriteLine("Ungültige Werkzeugart!");
+
+            break;
+    }
+
+    if (neu != null)
+    {
+        industrieroboter1.werkzeugHinzufuegen(platz, neu);
+    }
+}
+
+int ZahlEinlesen(string frage)
+{
+    int zahl;
+    bool istZahl;
+    do
+    {
+        Console.WriteLine(frage);
+        istZahl = int.TryParse(Console.ReadLine(), out zahl);
+        if (!istZahl)
+        {
+            Console.WriteLine("Bitte eine Zahl eingeben: ");
+        }
+    }
+    while (!istZahl);
+
+    return zahl;
 }
