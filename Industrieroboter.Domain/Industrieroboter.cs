@@ -14,14 +14,9 @@ namespace Industrieroboter.Domain
 
         public bool werkzeugHinzufuegen(int platz, Werkzeug neu)
         {
+            platzPruefen(platz);
 
-            if (!(platz >= 0 && platz < maxAnzWerkzeuge))
-            {
-                Console.WriteLine($"Hinzufügen nicht möglich, da Platz {platz} nicht existiert.");
-
-                return false;
-            }
-            else if (werkzeugKasten[platz] != null)
+            if (werkzeugKasten[platz] != null)
             {
                 Console.WriteLine($"Hinzufügen nicht möglich, da Platz {platz} belegt ist.");
 
@@ -38,12 +33,7 @@ namespace Industrieroboter.Domain
         }
         public bool werkzeugEntfernen(int platz)
         {
-            if (!(platz >= 0 && platz < maxAnzWerkzeuge))
-            {
-                Console.WriteLine($"Entfernen nicht möglich, da Platz {platz} nicht existiert.");
-
-                return false;
-            }
+            platzPruefen(platz);
 
             Werkzeug? w = werkzeugKasten[platz];
 
@@ -83,12 +73,7 @@ namespace Industrieroboter.Domain
 
         public void werkzeugBenutzen(int platz, int wert)
         {
-            if (!(platz >= 0 && platz < maxAnzWerkzeuge))
-            {
-                Console.WriteLine($"Benutzen nicht möglich, da Platz {platz} nicht existiert.");
-
-                return;
-            }
+            platzPruefen(platz);
 
             Werkzeug? w = werkzeugKasten[platz];
 
@@ -100,10 +85,10 @@ namespace Industrieroboter.Domain
             }
             else
             {
-                if(w.benutzen(wert))
+                if (w.benutzen(wert))
                 {
-                Console.Write($"Benutztes Werkzeug von Platz {platz}: ");
-                w.ausgeben();
+                    Console.Write($"Benutztes Werkzeug von Platz {platz}: ");
+                    w.ausgeben();
                 }
 
                 return;
@@ -112,12 +97,7 @@ namespace Industrieroboter.Domain
 
         public void werkzeugWarten(int platz)
         {
-            if (!(platz >= 0 && platz < maxAnzWerkzeuge))
-            {
-                Console.WriteLine($"Warten nicht möglich, da Platz {platz} nicht existiert.");
-
-                return;
-            }
+            platzPruefen(platz);
 
             Werkzeug? w = werkzeugKasten[platz];
 
@@ -135,6 +115,11 @@ namespace Industrieroboter.Domain
 
                 return;
             }
+        }
+        private void platzPruefen(int platz)
+        {
+            if (platz < 0 || platz > (maxAnzWerkzeuge - 1))
+                throw new ArgumentOutOfRangeException(nameof(platz), $"Platz muss zwischen 0 und {maxAnzWerkzeuge - 1} liegen!");
         }
     }
 }
