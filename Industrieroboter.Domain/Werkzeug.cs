@@ -1,5 +1,9 @@
 ﻿namespace Industrieroboter.Domain;
 
+public enum BohrerArt { Spiralbohrer, Stufenbohrer, Kernbohrer, Gewindebohrer }
+public enum GreiferArt { Parallelgreifer, Vakuumgreifer, Magnetgreifer, Nadelgreifer }
+public enum SchweisserArt { Punktschweissen, Schutzgasschweissen, WigSchweissen, Laserschweissen }
+
 public abstract class Werkzeug
 {
     private string art;
@@ -46,10 +50,17 @@ public abstract class Werkzeug
 
 public class Bohrer : Werkzeug 
 {
+    private BohrerArt bohrerArt;
     private int groesse;
-    public Bohrer(string art, int verschleiss, int groesse) : base(art, verschleiss)
+    public Bohrer(string art, int verschleiss, int groesse, BohrerArt bohrerart = BohrerArt.Spiralbohrer) : base(art, verschleiss)
     {
+        this.bohrerArt = bohrerart;
         this.groesse = groesse;
+    }
+
+    public BohrerArt BohrerTyp
+    {
+        get { return bohrerArt; }
     }
 
     public override void ausgeben()
@@ -60,23 +71,26 @@ public class Bohrer : Werkzeug
 
 public class Greifer : Werkzeug
 {
-    public Greifer(string art, int verschleiss) : base(art, verschleiss)
+    private GreiferArt greiferArt;
+    public Greifer(string art, int verschleiss, GreiferArt greiferArt = GreiferArt.Parallelgreifer) : base(art, verschleiss)
     {
+        this.greiferArt = greiferArt;
     }
     public override void ausgeben()
     {
-        Console.WriteLine($"Greifer (Verschleiss {Verschleiss} %).");
+        Console.WriteLine($"{greiferArt} (Verschleiss {Verschleiss} %).");
     }
 }
 
 public class Schweisser : Werkzeug
 {
-    public Schweisser(string art, int verschleiss) : base(art, verschleiss)
+    private SchweisserArt schweisserArt;
+    public Schweisser(string art, int verschleiss, SchweisserArt schweisserArt = SchweisserArt.Punktschweissen) : base(art, verschleiss)
     {
+        this.schweisserArt = schweisserArt;
     }
     public override void ausgeben()
     {
-        Console.WriteLine($"Schweisser (Verschleiss {Verschleiss} %).");
+        Console.WriteLine($"{schweisserArt} (Verschleiss {Verschleiss} %).");
     }
-
 }
