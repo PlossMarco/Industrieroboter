@@ -71,7 +71,7 @@ namespace Industrieroboter.Domain
             }
         }
 
-        public void werkzeugBenutzen(int platz, int wert)
+        public bool werkzeugBenutzen(int platz, int wert)
         {
             platzPruefen(platz);
 
@@ -81,7 +81,7 @@ namespace Industrieroboter.Domain
             {
                 Console.WriteLine($"Benutzen nicht möglich, da Platz {platz} nicht belegt ist.");
 
-                return;
+                return false;
             }
             else
             {
@@ -89,13 +89,13 @@ namespace Industrieroboter.Domain
                 {
                     Console.Write($"Benutztes Werkzeug von Platz {platz}: ");
                     w.ausgeben();
+                    return true;
                 }
-
-                return;
+                else { return false; }
             }
         }
 
-        public void werkzeugWarten(int platz)
+        public bool werkzeugWarten(int platz)
         {
             platzPruefen(platz);
 
@@ -105,7 +105,7 @@ namespace Industrieroboter.Domain
             {
                 Console.WriteLine($"Warten nicht möglich, da Platz {platz} nicht belegt ist.");
 
-                return;
+                return false;
             }
             else
             {
@@ -113,7 +113,7 @@ namespace Industrieroboter.Domain
                 w.warten();
                 w.ausgeben();
 
-                return;
+                return true;
             }
         }
         private void platzPruefen(int platz)
