@@ -3,13 +3,26 @@
 public abstract class Werkzeug
 {
     private string art;
-    protected int verschleiss;
+    private int verschleiss;
+    public int Verschleiss
+    {
+        get { return verschleiss; }
+        private set
+        {
+            if (value < 0 || value > 100)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), "Verschleiss muss zwischen 0 und 100 liegen.");
+            }
+            verschleiss = value;
+        }
+    }
+
     public abstract void ausgeben();
 
     public Werkzeug(string art, int verschleiss)
     {
         this.art = art;
-        this.verschleiss = verschleiss;
+        this.Verschleiss = verschleiss;
     }
     public bool benutzen(int wert)
     {
@@ -20,14 +33,14 @@ public abstract class Werkzeug
 
                 return false;
             }
-        verschleiss = Math.Min(verschleiss + wert, 100);
+        Verschleiss = Math.Min(verschleiss + wert, 100);
 
         return true;
     }
 
     public void warten()
     {
-        verschleiss = 0;
+        Verschleiss = 0;
     }
 }
 
@@ -41,7 +54,7 @@ public class Bohrer : Werkzeug
 
     public override void ausgeben()
     {
-        Console.WriteLine($"Bohrer mit Groesse {groesse} (Verschleiss {verschleiss} %).");
+        Console.WriteLine($"Bohrer mit Groesse {groesse} (Verschleiss {Verschleiss} %).");
     }
 }
 
@@ -52,7 +65,7 @@ public class Greifer : Werkzeug
     }
     public override void ausgeben()
     {
-        Console.WriteLine($"Greifer (Verschleiss {verschleiss} %).");
+        Console.WriteLine($"Greifer (Verschleiss {Verschleiss} %).");
     }
 }
 
@@ -63,7 +76,7 @@ public class Schweisser : Werkzeug
     }
     public override void ausgeben()
     {
-        Console.WriteLine($"Schweisser (Verschleiss {verschleiss} %).");
+        Console.WriteLine($"Schweisser (Verschleiss {Verschleiss} %).");
     }
 
 }
