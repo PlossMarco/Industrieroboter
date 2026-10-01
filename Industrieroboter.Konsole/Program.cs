@@ -23,13 +23,13 @@ do
             break;
 
         case 4:                             // Benutzen
-            int platzBenutzen = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
-            int wert = ZahlEinlesen("Wählen Sie den Verschleiss (0 - 100)");
+            int platzBenutzen = ZahlEinlesen("Welches Werkzeug soll benutzt werden ? Platz(0 - 9) : ");
+            int wert = ZahlEinlesen("Um wie viel % soll der Verschleiss steigen? ");
             industrieroboter1.werkzeugBenutzen(platzBenutzen, wert);
             break;
 
         case 5:                             // Warten
-            int platzWarten = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
+            int platzWarten = ZahlEinlesen("Welches Werkzeug soll gewartet werden? Platz (0 - 9):");
             industrieroboter1.werkzeugWarten(platzWarten);
             break;
 

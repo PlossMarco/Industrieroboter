@@ -11,15 +11,18 @@ public abstract class Werkzeug
         this.art = art;
         this.verschleiss = verschleiss;
     }
-    public void benutzen(int wert)
+    public bool benutzen(int wert)
     {
 
             if (wert < 0)
             {
                 Console.WriteLine("Der Verschleiss muss im positiven Bereich liegen!");
-                return;
+
+                return false;
             }
         verschleiss = Math.Min(verschleiss + wert, 100);
+
+        return true;
     }
 
     public void warten()

@@ -100,9 +100,11 @@ namespace Industrieroboter.Domain
             }
             else
             {
-                Console.Write($"Benutzes Werkzeug von Platz {platz}: ");
-                w.benutzen(wert);
+                if(w.benutzen(wert))
+                {
+                Console.Write($"Benutztes Werkzeug von Platz {platz}: ");
                 w.ausgeben();
+                }
 
                 return;
             }
