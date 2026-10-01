@@ -121,5 +121,45 @@ namespace Industrieroboter.Domain
             if (platz < 0 || platz > (maxAnzWerkzeuge - 1))
                 throw new ArgumentOutOfRangeException(nameof(platz), $"Platz muss zwischen 0 und {maxAnzWerkzeuge - 1} liegen!");
         }
+
+        public void werkzeugStatistik()
+        {
+            // Variablen
+            int frei = 0;
+            int verschleissGesamt = 0;
+            Werkzeug? staerkstes = null;
+
+            // Schleife zählt durch alle Plätze des Werkzeugkasten
+            for (int i = 0; i < maxAnzWerkzeuge; i++)
+            {
+                Werkzeug? w = werkzeugKasten[i];
+
+                if (w == null)
+                    frei++;
+                else
+                {
+                    verschleissGesamt += w.Verschleiss;
+
+                    if (staerkstes == null || w.Verschleiss > staerkstes.Verschleiss)
+                        staerkstes = w;
+                }
+            }
+
+            int belegt = maxAnzWerkzeuge - frei;
+
+            if (staerkstes == null)
+            {
+                Console.WriteLine("Keine Werkzeuge vorhanden.");
+                        return;
+            }
+
+            double durchschnittVerschleiss = (double)verschleissGesamt / belegt;
+
+            Console.WriteLine($"der durchschnittliche Verschleiss aller Werkzeuge liegt bei: \t\t{durchschnittVerschleiss:0.0}");
+            Console.WriteLine($"Anzahl der Plätze \tbelegt: {belegt}\tfrei: {frei}");
+            Console.Write($"das am stärksten verschlissene Werkzeug ist: ");
+            staerkstes.ausgeben();
+
+        }
     }
 }

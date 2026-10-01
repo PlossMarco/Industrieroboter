@@ -7,7 +7,7 @@ Industrieroboter.Domain.Industrieroboter industrieroboter1 = new Industrierobote
 do
 {
     Console.WriteLine("=== Werkzeugkasten-Verwaltung ===");
-    int menueAuswahl = ZahlEinlesen("1 = Hinzufügen | 2 = Entfernen | 3 = Anzeigen | 4 = Benutzen | 5 = Warten | 6 = Beenden | 7 = Testprogramm");
+    int menueAuswahl = ZahlEinlesen("1 = Hinzufügen | 2 = Entfernen | 3 = Anzeigen | 4 = Benutzen | 5 = Warten | 6 = Beenden | 7 = Testprogramm | 8 = Statistik");
     try
     {
 
@@ -43,8 +43,12 @@ do
                 Testprogramm();
                 break;
 
+            case 8:
+                industrieroboter1.werkzeugStatistik();
+                break;
+
             default:
-                Console.WriteLine("Die Eingabe muss eine Zahl zwischen 1 und 7 sein");
+                Console.WriteLine("Die Eingabe muss eine Zahl zwischen 1 und 8 sein");
                 break;
         }
     }
