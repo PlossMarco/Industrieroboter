@@ -1,13 +1,24 @@
-﻿using Industrieroboter.Domain;
+// Konsolenanwendung zur Verwaltung eines Industrieroboters (Aufgabe 2).
+// Program.cs ist für die Kommunikation mit dem Nutzer zuständig (Eingaben, Menüs, Fehlermeldungen);
+// die eigentliche Logik liegt im Domain-Projekt.
 
+using Industrieroboter.Domain;
+
+// Steuert die Menüschleife; wird nur bei "6 = Beenden" auf false gesetzt.
 bool checkMenue = true;
 
+// Ein Roboter für die gesamte Laufzeit (vor der Schleife), damit Werkzeuge zwischen den Menüpunkten erhalten bleiben.
+// Voller Name nötig, weil "Industrieroboter" sonst als Namespace interpretiert wird.
 Industrieroboter.Domain.Industrieroboter industrieroboter1 = new Industrieroboter.Domain.Industrieroboter();
 
+// do-while: Das Menü wird mindestens einmal angezeigt.
 do
 {
     Console.WriteLine("=== Werkzeugkasten-Verwaltung ===");
     int menueAuswahl = ZahlEinlesen("1 = Hinzufügen | 2 = Entfernen | 3 = Anzeigen | 4 = Benutzen | 5 = Warten | 6 = Beenden | 7 = Testprogramm | 8 = Statistik");
+
+    // Ein try/catch um den ganzen switch (DRY): fängt ungültige Plätze aus allen Menüpunkten ab,
+    // damit das Programm nicht abstürzt und der Nutzer es erneut versuchen kann.
     try
     {
 
@@ -39,27 +50,32 @@ do
                 checkMenue = false;
                 break;
 
-            case 7:                             // Testprogramm
+            case 7:                             // Testprogramm (Aufgabe 1.2)
                 Testprogramm();
                 break;
 
-            case 8:
+            case 8:                             // Statistik
                 industrieroboter1.werkzeugStatistik();
                 break;
 
-            default:
+            default:                            // ungültige Menüauswahl
                 Console.WriteLine("Die Eingabe muss eine Zahl zwischen 1 und 8 sein");
                 break;
         }
     }
     catch (ArgumentOutOfRangeException ex)
     {
+        // Die Meldung wurde bereits im Roboter formuliert und wird hier nur weitergegeben.
         Console.WriteLine(ex.Message);
     }
 }
 while (checkMenue);
 
 
+/// <summary>
+/// Testprogramm aus Aufgabe 1.2 (manuelle Tests per Sichtprüfung).
+/// Nutzt einen eigenen, frischen Roboter, damit der Menü-Roboter unberührt bleibt.
+/// </summary>
 void Testprogramm()
 {
     Werkzeug bohrer1 = new Bohrer("bohrer", 0, 10);
@@ -67,16 +83,19 @@ void Testprogramm()
 
     Industrieroboter.Domain.Industrieroboter industrieroboter1 = new Industrieroboter.Domain.Industrieroboter();
 
-    TesteHinzufuegen(5, bohrer1);
-    TesteHinzufuegen(5, bohrer2);
-    TesteHinzufuegen(10, bohrer2);
-    TesteHinzufuegen(-1, bohrer2);
+    TesteHinzufuegen(5, bohrer1);   // erwartet: hinzugefügt
+    TesteHinzufuegen(5, bohrer2);   // erwartet: belegt
+    TesteHinzufuegen(10, bohrer2);  // erwartet: existiert nicht
+    TesteHinzufuegen(-1, bohrer2);  // erwartet: existiert nicht
 
-    TesteEntfernen(5);
-    TesteEntfernen(5);
-    TesteEntfernen(10);
-    TesteEntfernen(-1);
+    TesteEntfernen(5);              // erwartet: entfernt
+    TesteEntfernen(5);              // erwartet: nicht belegt
+    TesteEntfernen(10);             // erwartet: existiert nicht
+    TesteEntfernen(-1);             // erwartet: existiert nicht
 
+    // Lokale Hilfsfunktionen innerhalb von Testprogramm():
+    // sehen den Test-Roboter und fangen die Exception je Testfall einzeln ab,
+    // damit alle 8 Tests durchlaufen. Die Texte entsprechen exakt der Vorgabe aus 1.2.
     void TesteHinzufuegen(int platz, Werkzeug neu)
     {
         try
@@ -102,12 +121,18 @@ void Testprogramm()
 }
 
 
+/// <summary>
+/// Menüpunkt 1: fragt erst den Platz, dann über ein Untermenü die Werkzeugart
+/// (beim Bohrer zusätzlich die Größe) sowie die spezifische Bauform ab und legt das Werkzeug ab.
+/// </summary>
 void WerkzeugHinzufuegenMenue()
 {
     int platz = ZahlEinlesen("Geben Sie den Platz ein, an dem Sie das gewünschte Werkzeug hinzufügen möchten (0 - 9)");
 
     int artAuswahl = ZahlEinlesen("Wählen Sie die Art des Werkzeuges 1 = Bohrer | 2 = Greifer | 3 = Schweisser");
 
+    // Typ Werkzeug (Basisklasse), damit jede Unterklasse hineinpasst;
+    // "?" weil bei ungültiger Auswahl kein Werkzeug entsteht.
     Werkzeug? neu = null;
 
     switch (artAuswahl)
@@ -115,10 +140,10 @@ void WerkzeugHinzufuegenMenue()
         case 1:
             int groesse = ZahlEinlesen("Geben Sie die Größe des Bohrers ein (1 - 10).");
 
+            // Nutzer zählt ab 1, Enum ab 0 -> "- 1". Der Cast stürzt bei ungültigen Zahlen nicht ab,
+            // deshalb wird anschließend mit Enum.IsDefined geprüft.
             int bohrerArtAuswahl = ZahlEinlesen("Bohrerart: 1 = Spiralbohrer | 2 = Stufenbohrer | 3 = Kernbohrer | 4 = Gewindebohrer");
             BohrerArt bohrerArt = (BohrerArt)(bohrerArtAuswahl - 1);
-
-            neu = new Bohrer("bohrer", 0, groesse, bohrerArt);
 
             if (!Enum.IsDefined(bohrerArt))
             {
@@ -126,13 +151,13 @@ void WerkzeugHinzufuegenMenue()
                 return;
             }
 
+            neu = new Bohrer("bohrer", 0, groesse, bohrerArt);
+
             break;
 
         case 2:
             int greiferArtAuswahl = ZahlEinlesen("Greiferart: 1 = Parallelgreifer | 2 = Vakuumgreifer | 3 = Magnetgreifer | 4 = Nadelgreifer ");
             GreiferArt greiferArt = (GreiferArt)(greiferArtAuswahl - 1);
-
-            neu = new Greifer("greifer", 0, greiferArt);
 
             if (!Enum.IsDefined(greiferArt))
             {
@@ -140,19 +165,21 @@ void WerkzeugHinzufuegenMenue()
                 return;
             }
 
+            neu = new Greifer("greifer", 0, greiferArt);
+
             break;
 
         case 3:
             int schweisserArtAuswahl = ZahlEinlesen("Schweisserart: 1 = Punktschweissen | 2 = Schutzgasschweissen | 3 = WigSchweissen | 4 = Laserschweissen ");
             SchweisserArt schweisserArt = (SchweisserArt)(schweisserArtAuswahl - 1);
 
-            neu = new Schweisser("schweisser", 0, schweisserArt);
-
             if (!Enum.IsDefined(schweisserArt))
             {
                 Console.WriteLine("Ungültige Schweisserrart!");
                 return;
             }
+
+            neu = new Schweisser("schweisser", 0, schweisserArt);
 
             break;
 
@@ -162,12 +189,17 @@ void WerkzeugHinzufuegenMenue()
             break;
     }
 
+    // Nur ein Aufruf für alle drei Werkzeugarten (DRY); bei ungültiger Art bleibt neu == null.
     if (neu != null)
     {
         industrieroboter1.werkzeugHinzufuegen(platz, neu);
     }
 }
 
+/// <summary>
+/// Hilfsmethode: fragt so lange nach, bis eine ganze Zahl eingegeben wurde, und liefert diese zurück.
+/// </summary>
+/// <param name="frage">Der Text, der vor der Eingabe angezeigt wird.</param>
 int ZahlEinlesen(string frage)
 {
     int zahl;
@@ -175,6 +207,7 @@ int ZahlEinlesen(string frage)
     do
     {
         Console.WriteLine(frage);
+        // TryParse liefert true/false, ob die Umwandlung geklappt hat; die Zahl kommt über "out".
         istZahl = int.TryParse(Console.ReadLine(), out zahl);
         if (!istZahl)
         {
