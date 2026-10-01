@@ -114,17 +114,45 @@ void WerkzeugHinzufuegenMenue()
     {
         case 1:
             int groesse = ZahlEinlesen("Geben Sie die Größe des Bohrers ein (1 - 10).");
-            neu = new Bohrer("bohrer", 0, groesse);
+
+            int bohrerArtAuswahl = ZahlEinlesen("Bohrerart: 1 = Spiralbohrer | 2 = Stufenbohrer | 3 = Kernbohrer | 4 = Gewindebohrer");
+            BohrerArt bohrerArt = (BohrerArt)(bohrerArtAuswahl - 1);
+
+            neu = new Bohrer("bohrer", 0, groesse, bohrerArt);
+
+            if (!Enum.IsDefined(bohrerArt))
+            {
+                Console.WriteLine("Ungültige Bohrerart!");
+                return;
+            }
 
             break;
 
         case 2:
-            neu = new Greifer("greifer", 0);
+            int greiferArtAuswahl = ZahlEinlesen("Greiferart: 1 = Parallelgreifer | 2 = Vakuumgreifer | 3 = Magnetgreifer | 4 = Nadelgreifer ");
+            GreiferArt greiferArt = (GreiferArt)(greiferArtAuswahl - 1);
+
+            neu = new Greifer("greifer", 0, greiferArt);
+
+            if (!Enum.IsDefined(greiferArt))
+            {
+                Console.WriteLine("Ungültige Greiferart!");
+                return;
+            }
 
             break;
 
         case 3:
-            neu = new Schweisser("schweisser", 0);
+            int schweisserArtAuswahl = ZahlEinlesen("Schweisserart: 1 = Punktschweissen | 2 = Schutzgasschweissen | 3 = WigSchweissen | 4 = Laserschweissen ");
+            SchweisserArt schweisserArt = (SchweisserArt)(schweisserArtAuswahl - 1);
+
+            neu = new Schweisser("schweisser", 0, schweisserArt);
+
+            if (!Enum.IsDefined(schweisserArt))
+            {
+                Console.WriteLine("Ungültige Schweisserrart!");
+                return;
+            }
 
             break;
 
