@@ -9,6 +9,10 @@ public abstract class Werkzeug
 {
     /// <summary>Freitext-Bezeichnung der Werkzeugart (laut Klassendiagramm).</summary>
     private string art;
+    public string Art
+    {
+        get { return art; }
+    }
 
     /// <summary>Eigentliches Feld für den Verschleiß. Wird nur über die Property <see cref="Verschleiss"/> geschrieben.</summary>
     private int verschleiss;
@@ -58,13 +62,13 @@ public abstract class Werkzeug
     public bool benutzen(int wert)
     {
 
-            // Guard Clause: Durch Benutzen wird ein Werkzeug nie "besser".
-            if (wert < 0)
-            {
-                Console.WriteLine("Der Verschleiss muss im positiven Bereich liegen!");
+        // Guard Clause: Durch Benutzen wird ein Werkzeug nie "besser".
+        if (wert < 0)
+        {
+            Console.WriteLine("Der Verschleiss muss im positiven Bereich liegen!");
 
-                return false;
-            }
+            return false;
+        }
         // Math.Min nimmt den kleineren Wert -> alles über 100 wird auf 100 gedeckelt.
         Verschleiss = Math.Min(verschleiss + wert, 100);
 

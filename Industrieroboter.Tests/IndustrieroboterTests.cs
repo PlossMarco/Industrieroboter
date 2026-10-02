@@ -211,4 +211,16 @@ public class IndustrieroboterTests
         // Act + Assert: Konstruktor mit ungültigem Verschleiß muss eine Exception werfen
         Assert.Throws<ArgumentOutOfRangeException>(() => new Bohrer("bohrer", 150, 0));
     }
+
+    [Fact]
+    public void Konstruktor_Bezeichnung_UeberArtLesbar()
+    {
+        // Arrange: alles vorbereiten
+        Bohrer bohrer = new Bohrer("B-01", 0, 10);
+
+        // Act: ausführen
+
+        // Assert: Ergebnis prüfen
+        Assert.Equal("B-01", bohrer.Art);
+    }
 }
