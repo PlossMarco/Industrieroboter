@@ -32,16 +32,11 @@ namespace Industrieroboter.Domain
 
             if (werkzeugKasten[platz] != null)
             {
-                Console.WriteLine($"Hinzufügen nicht möglich, da Platz {platz} belegt ist.");
-
                 return false;
             }
             else
             {
                 werkzeugKasten[platz] = neu;
-                // Write + ausgeben(): beide Teile landen in derselben Zeile.
-                Console.Write($"Hinzugefügtes Werkzeug auf Platz {platz}: ");
-                neu.ausgeben();
 
                 return true;
             }
@@ -62,15 +57,10 @@ namespace Industrieroboter.Domain
 
             if (w == null)
             {
-                Console.WriteLine($"Entfernen nicht möglich, da Platz {platz} nicht belegt ist.");
-
                 return false;
             }
             else
             {
-                // Erst ausgeben, dann das Fach leeren – danach wäre das Werkzeug nicht mehr greifbar.
-                Console.Write($"Entferntes Werkzeug auf Platz {platz}: ");
-                w.ausgeben();
                 werkzeugKasten[platz] = null;
 
                 return true;
@@ -88,8 +78,8 @@ namespace Industrieroboter.Domain
 
                 if (w != null)
                 {
-                    Console.Write($"Platz {i}: ");
-                    w.ausgeben(); // polymorph: Bohrer, Greifer oder Schweisser gibt sich selbst aus
+                    Console.WriteLine($"Platz {i}: ");
+                    Console.WriteLine(w); // polymorph: Bohrer, Greifer oder Schweisser gibt sich selbst aus
                 }
                 else
                 {
@@ -114,20 +104,13 @@ namespace Industrieroboter.Domain
 
             if (w == null)
             {
-                Console.WriteLine($"Benutzen nicht möglich, da Platz {platz} nicht belegt ist.");
-
                 return false;
             }
             else
             {
-                // Arbeit an das Werkzeug weiterreichen und nur im Erfolgsfall melden.
-                if (w.benutzen(wert))
-                {
-                    Console.Write($"Benutztes Werkzeug von Platz {platz}: ");
-                    w.ausgeben();
-                    return true;
-                }
-                else { return false; }
+                w.benutzen(wert);
+
+                return true;
             }
         }
 
@@ -145,15 +128,11 @@ namespace Industrieroboter.Domain
 
             if (w == null)
             {
-                Console.WriteLine($"Warten nicht möglich, da Platz {platz} nicht belegt ist.");
-
                 return false;
             }
             else
             {
-                Console.Write($"Gewartetes Werkzeug von Platz {platz}: ");
                 w.warten();
-                w.ausgeben();
 
                 return true;
             }
@@ -214,9 +193,16 @@ namespace Industrieroboter.Domain
 
             Console.WriteLine($"der durchschnittliche Verschleiss aller Werkzeuge liegt bei: \t\t{durchschnittVerschleiss:0.0}");
             Console.WriteLine($"Anzahl der Plätze \tbelegt: {belegt}\tfrei: {frei}");
-            Console.Write($"das am stärksten verschlissene Werkzeug ist: ");
-            staerkstes.ausgeben();
+            Console.WriteLine($"das am stärksten verschlissene Werkzeug ist: ");
+        Console.WriteLine(staerkstes);
 
+        }
+
+        public Werkzeug? werkzeugAbrufen(int platz)
+        {
+            platzPruefen(platz);
+
+            return werkzeugKasten[platz];
         }
     }
 }

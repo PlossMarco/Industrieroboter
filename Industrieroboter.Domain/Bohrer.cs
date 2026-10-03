@@ -38,8 +38,8 @@ public class Bohrer : Werkzeug
     /// Gibt "Bohrer mit Groesse x (Verschleiss y %)." aus.
     /// Der Text bleibt bewusst ohne Bohrerart, damit die Ausgabe exakt der Vorgabe aus Aufgabe 1.2 entspricht.
     /// </summary>
-    public override void ausgeben()
+    public override string ToString()
     {
-        Console.WriteLine($"Bohrer mit Groesse {groesse} (Verschleiss {Verschleiss} %).");
+        return $"Bohrer mit Groesse {groesse} (Verschleiss {Verschleiss} %).";
     }
 }

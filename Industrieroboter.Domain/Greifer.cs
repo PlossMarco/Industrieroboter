@@ -23,8 +23,8 @@ public class Greifer : Werkzeug
     }
 
     /// <summary>Gibt z. B. "Magnetgreifer (Verschleiss y %)." aus.</summary>
-    public override void ausgeben()
+    public override string ToString()
     {
-        Console.WriteLine($"{greiferArt} (Verschleiss {Verschleiss} %).");
+        return $"{greiferArt} (Verschleiss {Verschleiss} %).";
     }
 }

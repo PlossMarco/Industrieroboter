@@ -144,19 +144,16 @@ public class IndustrieroboterTests
     }
 
     [Fact]
-    public void Benutzen_Minus10_FalseVerschleissBleibt()
+    public void Benutzen_NegativWert_Exception()
     {
         // Arrange: Bohrer mit 50 % Verschleiß auf Platz 5
         Roboter roboter = new Roboter();
         Bohrer bohrer = new Bohrer("bohrer", 50, 0);
         roboter.werkzeugHinzufuegen(5, bohrer);
 
-        // Act: ausführen
-        bool ergebnis = roboter.werkzeugBenutzen(5, -10);
 
-        // Assert: abgelehnt und Verschleiß unverändert
-        Assert.Equal(50, bohrer.Verschleiss);
-        Assert.False(ergebnis);
+        // Act + Assert: Negativwert bei Verschleiss abgelehnt
+        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.werkzeugBenutzen(5, -10));
     }
 
     [Fact]

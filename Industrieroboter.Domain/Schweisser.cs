@@ -23,8 +23,8 @@ public class Schweisser : Werkzeug
     }
 
     /// <summary>Gibt z. B. "Laserschweissen (Verschleiss y %)." aus.</summary>
-    public override void ausgeben()
+    public override string ToString()
     {
-        Console.WriteLine($"{schweisserArt} (Verschleiss {Verschleiss} %).");
+        return $"{schweisserArt} (Verschleiss {Verschleiss} %).";
     }
 }

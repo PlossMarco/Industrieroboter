@@ -37,10 +37,10 @@ public abstract class Werkzeug
     }
 
     /// <summary>
-    /// Gibt eine Beschreibung des Werkzeugs auf der Konsole aus.
+    /// Liefert eine Beschreibung des Werkzeugs auf der Konsole zurück.
     /// Abstrakt: Jede Unterklasse muss selbst festlegen, wie sie sich ausgibt (Polymorphie).
     /// </summary>
-    public abstract void ausgeben();
+    public abstract override string ToString();
 
     /// <summary>
     /// Initialisiert Art und Verschleiß. Der Verschleiß läuft dabei über die Property,
@@ -59,20 +59,16 @@ public abstract class Werkzeug
     /// </summary>
     /// <param name="wert">Zuwachs in Prozent. Negative Werte sind fachlich unsinnig und werden abgelehnt.</param>
     /// <returns>true, wenn der Verschleiß erhöht wurde; false bei negativem Wert.</returns>
-    public bool benutzen(int wert)
+    public void benutzen(int wert)
     {
 
         // Guard Clause: Durch Benutzen wird ein Werkzeug nie "besser".
         if (wert < 0)
         {
-            Console.WriteLine("Der Verschleiss muss im positiven Bereich liegen!");
-
-            return false;
+            throw new ArgumentOutOfRangeException(nameof(wert), "Der Verschleiss muss im positiven Bereich liegen!");
         }
         // Math.Min nimmt den kleineren Wert -> alles über 100 wird auf 100 gedeckelt.
         Verschleiss = Math.Min(verschleiss + wert, 100);
-
-        return true;
     }
 
     /// <summary>
@@ -83,5 +79,6 @@ public abstract class Werkzeug
         Verschleiss = 0;
     }
 }
+
 
 

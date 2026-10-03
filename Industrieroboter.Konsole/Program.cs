@@ -29,7 +29,16 @@ do
                 break;
             case 2:                             // Entfernen
                 int platzEntfernen = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
-                industrieroboter1.werkzeugEntfernen(platzEntfernen);
+                Werkzeug? entfernt = industrieroboter1.werkzeugAbrufen(platzEntfernen);
+                bool erfolgreich = industrieroboter1.werkzeugEntfernen(platzEntfernen);
+                if (erfolgreich)
+                {
+                    Console.WriteLine($"Entferntes Werkzeug auf Platz {platzEntfernen}: {entfernt}");
+                }
+                else
+                {
+                    Console.WriteLine($"Entfernen nicht möglich, da Platz {platzEntfernen} leer ist.");
+                }
                 break;
             case 3:                             // Anzeigen
                 industrieroboter1.werkzeugAnzeigen();
