@@ -1,15 +1,15 @@
 // Konsolenanwendung zur Verwaltung eines Industrieroboters (Aufgabe 2).
 // Program.cs ist für die Kommunikation mit dem Nutzer zuständig (Eingaben, Menüs, Fehlermeldungen);
 // die eigentliche Logik liegt im Domain-Projekt.
-
 using Industrieroboter.Domain;
+using Roboter = Industrieroboter.Domain.Industrieroboter;
 
 // Steuert die Menüschleife; wird nur bei "6 = Beenden" auf false gesetzt.
 bool checkMenue = true;
 
 // Ein Roboter für die gesamte Laufzeit (vor der Schleife), damit Werkzeuge zwischen den Menüpunkten erhalten bleiben.
 // Voller Name nötig, weil "Industrieroboter" sonst als Namespace interpretiert wird.
-Industrieroboter.Domain.Industrieroboter industrieroboter1 = new Industrieroboter.Domain.Industrieroboter();
+Roboter industrieroboter1 = new Roboter();
 
 // do-while: Das Menü wird mindestens einmal angezeigt.
 do
@@ -29,16 +29,9 @@ do
                 break;
             case 2:                             // Entfernen
                 int platzEntfernen = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
+
                 Werkzeug? entfernt = industrieroboter1.werkzeugAbrufen(platzEntfernen);
-                bool erfolgreich = industrieroboter1.werkzeugEntfernen(platzEntfernen);
-                if (erfolgreich)
-                {
-                    Console.WriteLine($"Entferntes Werkzeug auf Platz {platzEntfernen}: {entfernt}");
-                }
-                else
-                {
-                    Console.WriteLine($"Entfernen nicht möglich, da Platz {platzEntfernen} leer ist.");
-                }
+                EntfernenMitMeldung(industrieroboter1, platzEntfernen);
                 break;
             case 3:                             // Anzeigen
                 industrieroboter1.werkzeugAnzeigen();
@@ -47,12 +40,32 @@ do
             case 4:                             // Benutzen
                 int platzBenutzen = ZahlEinlesen("Welches Werkzeug soll benutzt werden ? Platz(0 - 9) : ");
                 int wert = ZahlEinlesen("Um wie viel % soll der Verschleiss steigen? ");
-                industrieroboter1.werkzeugBenutzen(platzBenutzen, wert);
+                bool genutzt = industrieroboter1.werkzeugBenutzen(platzBenutzen, wert);
+                Werkzeug? benutzt = industrieroboter1.werkzeugAbrufen(platzBenutzen);
+
+                if (genutzt)
+                {
+                    Console.WriteLine($"Benutztes Werkzeug auf Platz {platzBenutzen}: {benutzt}");
+                }
+                else
+                {
+                    Console.WriteLine($"Benutzen nicht möglich, da Platz {platzBenutzen} leer ist.");
+                }
                 break;
 
             case 5:                             // Warten
                 int platzWarten = ZahlEinlesen("Welches Werkzeug soll gewartet werden? Platz (0 - 9):");
-                industrieroboter1.werkzeugWarten(platzWarten);
+                bool gewartet = industrieroboter1.werkzeugWarten(platzWarten);
+                Werkzeug? neu = industrieroboter1.werkzeugAbrufen(platzWarten);
+
+                if (gewartet)
+                {
+                    Console.WriteLine($"Gewartetes Werkzeug auf Platz {platzWarten}: {neu}");
+                }
+                else
+                {
+                    Console.WriteLine($"Warten nicht möglich, da Platz {platzWarten} leer ist.");
+                }
                 break;
 
             case 6:                             // Beenden
@@ -109,7 +122,7 @@ void Testprogramm()
     {
         try
         {
-            industrieroboter1.werkzeugHinzufuegen(platz, neu);
+            HinzufuegenMitMeldung(industrieroboter1, platz, neu);
         }
         catch (ArgumentOutOfRangeException)
         {
@@ -120,7 +133,7 @@ void Testprogramm()
     {
         try
         {
-            industrieroboter1.werkzeugEntfernen(platz);
+            EntfernenMitMeldung(industrieroboter1, platz);
         }
         catch (ArgumentOutOfRangeException)
         {
@@ -197,11 +210,9 @@ void WerkzeugHinzufuegenMenue()
 
             break;
     }
-
-    // Nur ein Aufruf für alle drei Werkzeugarten (DRY); bei ungültiger Art bleibt neu == null.
     if (neu != null)
     {
-        industrieroboter1.werkzeugHinzufuegen(platz, neu);
+        HinzufuegenMitMeldung(industrieroboter1, platz, neu);
     }
 }
 
@@ -226,4 +237,32 @@ int ZahlEinlesen(string frage)
     while (!istZahl);
 
     return zahl;
+}
+
+void HinzufuegenMitMeldung(Roboter roboter, int platz, Werkzeug neu)
+{
+    bool w = roboter.werkzeugHinzufuegen(platz, neu);
+    if (w)
+    {
+        Console.WriteLine($"Hinzugefügtes Werkzeug auf Platz {platz}: {neu}");
+    }
+    else
+    {
+        Console.WriteLine($"Hinzufügen nicht möglich, da Platz {platz} belegt ist.");
+    }
+}
+
+void EntfernenMitMeldung(Roboter roboter, int platzEntfernen)
+{
+    Werkzeug? entfernt = roboter.werkzeugAbrufen(platzEntfernen);
+    bool w = roboter.werkzeugEntfernen(platzEntfernen);
+
+    if (w)
+    {
+        Console.WriteLine($"Entferntes Werkzeug auf Platz {platzEntfernen}: {entfernt}");
+    }
+    else
+    {
+        Console.WriteLine($"Entfernen nicht möglich, da Platz {platzEntfernen} nicht belegt ist.");
+    }
 }
