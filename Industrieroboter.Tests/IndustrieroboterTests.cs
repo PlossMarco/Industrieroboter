@@ -19,7 +19,7 @@ public class IndustrieroboterTests
         Roboter roboter = new Roboter();
 
         // Act: ausführen
-        bool ergebnis = roboter.werkzeugHinzufuegen(5, new Bohrer("bohrer", 0, 10));
+        bool ergebnis = roboter.WerkzeugHinzufuegen(5, new Bohrer("bohrer", 0, 10));
 
         // Assert: Ergebnis prüfen
         Assert.True(ergebnis);
@@ -30,10 +30,10 @@ public class IndustrieroboterTests
     {
         // Arrange: Platz 5 vorbelegen
         Roboter roboter = new Roboter();
-        roboter.werkzeugHinzufuegen(5, new Bohrer("bohrer", 0, 10));
+        roboter.WerkzeugHinzufuegen(5, new Bohrer("bohrer", 0, 10));
 
         // Act: ausführen
-        bool ergebnis = roboter.werkzeugHinzufuegen(5, new Bohrer("bohrer", 0, 10));
+        bool ergebnis = roboter.WerkzeugHinzufuegen(5, new Bohrer("bohrer", 0, 10));
 
         // Assert: Ergebnis prüfen
         Assert.False(ergebnis);
@@ -47,7 +47,7 @@ public class IndustrieroboterTests
         Roboter roboter = new Roboter();
 
         // Act + Assert: ausführen und erwartete Exception prüfen
-        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.werkzeugHinzufuegen(ungueltigerPlatz, new Bohrer("bohrer", 0, 10)));
+        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.WerkzeugHinzufuegen(ungueltigerPlatz, new Bohrer("bohrer", 0, 10)));
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class IndustrieroboterTests
         Roboter roboter = new Roboter();
 
         // Act + Assert: ausführen und erwartete Exception prüfen
-        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.werkzeugHinzufuegen(ungueltigerPlatz, new Bohrer("bohrer", 0, 10)));
+        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.WerkzeugHinzufuegen(ungueltigerPlatz, new Bohrer("bohrer", 0, 10)));
     }
 
     // ---------- Entfernen ----------
@@ -68,10 +68,10 @@ public class IndustrieroboterTests
     {
         // Arrange: Platz 5 vorbelegen
         Roboter roboter = new Roboter();
-        roboter.werkzeugHinzufuegen(5, new Bohrer("bohrer", 0, 10));
+        roboter.WerkzeugHinzufuegen(5, new Bohrer("bohrer", 0, 10));
 
         // Act: ausführen
-        bool ergebnis = roboter.werkzeugEntfernen(5);
+        bool ergebnis = roboter.WerkzeugEntfernen(5);
 
         // Assert: Ergebnis prüfen
         Assert.True(ergebnis);
@@ -84,7 +84,7 @@ public class IndustrieroboterTests
         Roboter roboter = new Roboter();
 
         // Act: ausführen
-        bool ergebnis = roboter.werkzeugEntfernen(5);
+        bool ergebnis = roboter.WerkzeugEntfernen(5);
 
         // Assert: Ergebnis prüfen
         Assert.False(ergebnis);
@@ -98,7 +98,7 @@ public class IndustrieroboterTests
         Roboter roboter = new Roboter();
 
         // Act + Assert: ausführen und erwartete Exception prüfen
-        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.werkzeugEntfernen(ungueltigerPlatz));
+        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.WerkzeugEntfernen(ungueltigerPlatz));
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public class IndustrieroboterTests
         Roboter roboter = new Roboter();
 
         // Act + Assert: ausführen und erwartete Exception prüfen
-        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.werkzeugEntfernen(ungueltigerPlatz));
+        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.WerkzeugEntfernen(ungueltigerPlatz));
     }
 
     // ---------- Benutzen ----------
@@ -119,10 +119,10 @@ public class IndustrieroboterTests
     {
         // Arrange: Werkzeug auf Platz 5 legen
         Roboter roboter = new Roboter();
-        roboter.werkzeugHinzufuegen(5, new Bohrer("bohrer", 0, 10));
+        roboter.WerkzeugHinzufuegen(5, new Bohrer("bohrer", 0, 10));
 
         // Act: ausführen
-        bool ergebnis = roboter.werkzeugBenutzen(5, 50);
+        bool ergebnis = roboter.WerkzeugBenutzen(5, 50);
 
         // Assert: Ergebnis prüfen
         Assert.True(ergebnis);
@@ -134,10 +134,10 @@ public class IndustrieroboterTests
         // Arrange: Bohrer in einer Variable merken, um danach seinen Verschleiß abzufragen
         Roboter roboter = new Roboter();
         Bohrer bohrer = new Bohrer("bohrer", 0, 10);
-        roboter.werkzeugHinzufuegen(5, bohrer);
+        roboter.WerkzeugHinzufuegen(5, bohrer);
 
         // Act
-        roboter.werkzeugBenutzen(5, 120);
+        roboter.WerkzeugBenutzen(5, 120);
 
         // Assert: muss bei 100 gedeckelt sein
         Assert.Equal(100, bohrer.Verschleiss);
@@ -149,11 +149,11 @@ public class IndustrieroboterTests
         // Arrange: Bohrer mit 50 % Verschleiß auf Platz 5
         Roboter roboter = new Roboter();
         Bohrer bohrer = new Bohrer("bohrer", 50, 0);
-        roboter.werkzeugHinzufuegen(5, bohrer);
+        roboter.WerkzeugHinzufuegen(5, bohrer);
 
 
         // Act + Assert: Negativwert bei Verschleiss abgelehnt
-        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.werkzeugBenutzen(5, -10));
+        Assert.Throws<ArgumentOutOfRangeException>(() => roboter.WerkzeugBenutzen(5, -10));
     }
 
     [Fact]
@@ -163,7 +163,7 @@ public class IndustrieroboterTests
         Roboter roboter = new Roboter();
 
         // Act: ausführen
-        bool ergebnis = roboter.werkzeugBenutzen(5, 50);
+        bool ergebnis = roboter.WerkzeugBenutzen(5, 50);
 
         // Assert: Ergebnis prüfen
         Assert.False(ergebnis);
@@ -176,10 +176,10 @@ public class IndustrieroboterTests
     {
         // Arrange: verschlissenes Werkzeug (50 %) auf Platz 5
         Roboter roboter = new Roboter();
-        roboter.werkzeugHinzufuegen(5, new Bohrer("bohrer", 50, 0));
+        roboter.WerkzeugHinzufuegen(5, new Bohrer("bohrer", 50, 0));
 
         // Act: ausführen
-        bool ergebnis = roboter.werkzeugWarten(5);
+        bool ergebnis = roboter.WerkzeugWarten(5);
 
         // Assert: Ergebnis prüfen
         Assert.True(ergebnis);
@@ -192,7 +192,7 @@ public class IndustrieroboterTests
         Roboter roboter = new Roboter();
 
         // Act: ausführen
-        bool ergebnis = roboter.werkzeugWarten(5);
+        bool ergebnis = roboter.WerkzeugWarten(5);
 
         // Assert: Ergebnis prüfen
         Assert.False(ergebnis);
@@ -228,7 +228,7 @@ public class IndustrieroboterTests
     {
         Roboter roboter = new Roboter();
 
-        Statistik statistik = roboter.statistikBerechnen();
+        Statistik statistik = roboter.StatistikBerechnen();
 
         Assert.Null(statistik.StaerkstesWerkzeug);
     }
@@ -237,10 +237,10 @@ public class IndustrieroboterTests
     public void Statistik_ZweiWerkzeuge_WerteKorrekt()
     {
         Roboter roboter = new Roboter();
-        roboter.werkzeugHinzufuegen(5, new Bohrer("bohrer", 20, 0));
+        roboter.WerkzeugHinzufuegen(5, new Bohrer("bohrer", 20, 0));
         Bohrer bohrer = new Bohrer("bohrer2", 60, 0);
-        roboter.werkzeugHinzufuegen(2, bohrer);
-        Statistik statistik = roboter.statistikBerechnen();
+        roboter.WerkzeugHinzufuegen(2, bohrer);
+        Statistik statistik = roboter.StatistikBerechnen();
 
 
         Assert.Same(bohrer, statistik.StaerkstesWerkzeug);

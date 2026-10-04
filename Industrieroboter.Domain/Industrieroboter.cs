@@ -11,22 +11,22 @@ namespace Industrieroboter.Domain
     {
         /// <summary>Anzahl der Plätze im Werkzeugkasten. static: gilt für alle Roboter gemeinsam; readonly: unveränderlich.</summary>
 
-        private static readonly int maxAnzWerkzeuge = 10;
+        private static readonly int _maxAnzWerkzeuge = 10;
 
         public int AnzahlPlaetze 
         {
             get {
-                return maxAnzWerkzeuge;
+                return _maxAnzWerkzeuge;
         }
 
         }
 
         /// <summary>
-        /// Der Werkzeugkasten. Plätze 0 bis maxAnzWerkzeuge-1.
+        /// Der Werkzeugkasten. Plätze 0 bis _maxAnzWerkzeuge-1.
         /// Werkzeug? -> ein Fach darf null sein (= leerer Platz).
         /// Typ Werkzeug -> Bohrer, Greifer und Schweisser passen alle hinein (Polymorphie).
         /// </summary>
-        private Werkzeug?[] werkzeugKasten = new Werkzeug[maxAnzWerkzeuge];
+        private Werkzeug?[] _werkzeugKasten = new Werkzeug[_maxAnzWerkzeuge];
 
         /// <summary>
         /// Legt ein Werkzeug auf den angegebenen Platz, sofern dieser frei ist.
@@ -35,17 +35,17 @@ namespace Industrieroboter.Domain
         /// <param name="neu">Das abzulegende Werkzeug.</param>
         /// <returns>true bei Erfolg; false, wenn der Platz bereits belegt ist.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Wenn der Platz nicht existiert.</exception>
-        public bool werkzeugHinzufuegen(int platz, Werkzeug neu)
+        public bool WerkzeugHinzufuegen(int platz, Werkzeug neu)
         {
-            platzPruefen(platz);
+            PlatzPruefen(platz);
 
-            if (werkzeugKasten[platz] != null)
+            if (_werkzeugKasten[platz] != null)
             {
                 return false;
             }
             else
             {
-                werkzeugKasten[platz] = neu;
+                _werkzeugKasten[platz] = neu;
 
                 return true;
             }
@@ -57,12 +57,12 @@ namespace Industrieroboter.Domain
         /// <param name="platz">Platz (0–9).</param>
         /// <returns>true bei Erfolg; false, wenn der Platz leer ist.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Wenn der Platz nicht existiert.</exception>
-        public bool werkzeugEntfernen(int platz)
+        public bool WerkzeugEntfernen(int platz)
         {
-            platzPruefen(platz);
+            PlatzPruefen(platz);
 
             // Lokale Variable, damit der Compiler die Null-Prüfung nachvollziehen kann.
-            Werkzeug? w = werkzeugKasten[platz];
+            Werkzeug? w = _werkzeugKasten[platz];
 
             if (w == null)
             {
@@ -70,7 +70,7 @@ namespace Industrieroboter.Domain
             }
             else
             {
-                werkzeugKasten[platz] = null;
+                _werkzeugKasten[platz] = null;
 
                 return true;
             }
@@ -84,11 +84,11 @@ namespace Industrieroboter.Domain
         /// <param name="wert">Zuwachs des Verschleißes in Prozent.</param>
         /// <returns>true bei Erfolg; false, wenn der Platz leer ist oder der Wert negativ.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Wenn der Platz nicht existiert.</exception>
-        public bool werkzeugBenutzen(int platz, int wert)
+        public bool WerkzeugBenutzen(int platz, int wert)
         {
-            platzPruefen(platz);
+            PlatzPruefen(platz);
 
-            Werkzeug? w = werkzeugKasten[platz];
+            Werkzeug? w = _werkzeugKasten[platz];
 
             if (w == null)
             {
@@ -96,7 +96,7 @@ namespace Industrieroboter.Domain
             }
             else
             {
-                w.benutzen(wert);
+                w.Benutzen(wert);
 
                 return true;
             }
@@ -108,11 +108,11 @@ namespace Industrieroboter.Domain
         /// <param name="platz">Platz (0–9).</param>
         /// <returns>true bei Erfolg; false, wenn der Platz leer ist.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Wenn der Platz nicht existiert.</exception>
-        public bool werkzeugWarten(int platz)
+        public bool WerkzeugWarten(int platz)
         {
-            platzPruefen(platz);
+            PlatzPruefen(platz);
 
-            Werkzeug? w = werkzeugKasten[platz];
+            Werkzeug? w = _werkzeugKasten[platz];
 
             if (w == null)
             {
@@ -120,7 +120,7 @@ namespace Industrieroboter.Domain
             }
             else
             {
-                w.warten();
+                w.Warten();
 
                 return true;
             }
@@ -130,18 +130,18 @@ namespace Industrieroboter.Domain
         /// Zentrale Prüfung, ob ein Platz existiert (DRY – wird von allen Methoden mit Platz-Parameter genutzt).
         /// private, weil sie nur intern als Hilfsmethode gebraucht wird.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException">Wenn der Platz außerhalb von 0 bis maxAnzWerkzeuge-1 liegt.</exception>
-        private void platzPruefen(int platz)
+        /// <exception cref="ArgumentOutOfRangeException">Wenn der Platz außerhalb von 0 bis _maxAnzWerkzeuge-1 liegt.</exception>
+        private void PlatzPruefen(int platz)
         {
-            if (platz < 0 || platz > (maxAnzWerkzeuge - 1))
-                throw new ArgumentOutOfRangeException(nameof(platz), $"Platz muss zwischen 0 und {maxAnzWerkzeuge - 1} liegen!");
+            if (platz < 0 || platz > (_maxAnzWerkzeuge - 1))
+                throw new ArgumentOutOfRangeException(nameof(platz), $"Platz muss zwischen 0 und {_maxAnzWerkzeuge - 1} liegen!");
         }
 
         /// <summary>
-        /// Gibt eine Statistik aus: durchschnittlicher Verschleiß aller vorhandenen Werkzeuge,
+        /// Berechnet eine Statistik: durchschnittlicher Verschleiß aller vorhandenen Werkzeuge,
         /// Anzahl belegter/freier Plätze und das am stärksten verschlissene Werkzeug.
         /// </summary>
-        public Statistik statistikBerechnen()
+        public Statistik StatistikBerechnen()
         {
             // Variablen, die beim Durchlaufen fortgeschrieben werden
             int frei = 0;
@@ -149,9 +149,9 @@ namespace Industrieroboter.Domain
             Werkzeug? staerkstes = null;
 
             // Schleife zählt durch alle Plätze des Werkzeugkasten
-            for (int i = 0; i < maxAnzWerkzeuge; i++)
+            for (int i = 0; i < _maxAnzWerkzeuge; i++)
             {
-                Werkzeug? w = werkzeugKasten[i];
+                Werkzeug? w = _werkzeugKasten[i];
 
                 if (w == null)
                     frei++;
@@ -165,7 +165,7 @@ namespace Industrieroboter.Domain
                 }
             }
 
-            int belegt = maxAnzWerkzeuge - frei;
+            int belegt = _maxAnzWerkzeuge - frei;
 
             double durchschnittVerschleiss = 0;
             
@@ -181,11 +181,11 @@ namespace Industrieroboter.Domain
 
         }
 
-        public Werkzeug? werkzeugAbrufen(int platz)
+        public Werkzeug? WerkzeugAbrufen(int platz)
         {
-            platzPruefen(platz);
+            PlatzPruefen(platz);
 
-            return werkzeugKasten[platz];
+            return _werkzeugKasten[platz];
         }
     }
 }

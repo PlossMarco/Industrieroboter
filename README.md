@@ -17,47 +17,56 @@ sauberer Fehlerbehandlung und automatisierten Tests.
   6. Beenden
   7. Testprogramm (manuelle Testfälle aus der Aufgabenstellung)
   8. Statistik (Ø-Verschleiß, freie/belegte Plätze, am stärksten verschlissenes Werkzeug)
-- **15 automatisierte Unit-Tests** mit xUnit
+- **18 automatisierte Unit-Tests** mit xUnit
 
 ## Klassendiagramm
 
 ```mermaid
 classDiagram
     class Industrieroboter {
-        -int maxAnzWerkzeuge = 10$
-        -Werkzeug?[] werkzeugKasten
-        +werkzeugHinzufuegen(int platz, Werkzeug neu) bool
-        +werkzeugEntfernen(int platz) bool
-        +werkzeugAnzeigen() void
-        +werkzeugBenutzen(int platz, int wert) bool
-        +werkzeugWarten(int platz) bool
-        +werkzeugStatistik() void
-        -platzPruefen(int platz) void
+        -int _maxAnzWerkzeuge = 10$
+        -Werkzeug?[] _werkzeugKasten
+        +int AnzahlPlaetze
+        +WerkzeugHinzufuegen(int platz, Werkzeug neu) bool
+        +WerkzeugEntfernen(int platz) bool
+        +WerkzeugBenutzen(int platz, int wert) bool
+        +WerkzeugWarten(int platz) bool
+        +WerkzeugAbrufen(int platz) Werkzeug?
+        +StatistikBerechnen() Statistik
+        -PlatzPruefen(int platz) void
     }
     class Werkzeug {
         <<abstract>>
-        -string art
-        -int verschleiss
+        -string _art
+        -int _verschleiss
+        +string Art
         +int Verschleiss
-        +ausgeben() void*
-        +benutzen(int wert) bool
-        +warten() void
+        +ToString() string*
+        +Benutzen(int wert) void
+        +Warten() void
     }
     class Bohrer {
-        -int groesse
-        -BohrerArt bohrerArt
+        -int _groesse
+        -BohrerArt _bohrerArt
         +BohrerArt BohrerTyp
-        +ausgeben() void
+        +ToString() string
     }
     class Greifer {
-        -GreiferArt greiferArt
-        +ausgeben() void
+        -GreiferArt _greiferArt
+        +ToString() string
     }
     class Schweisser {
-        -SchweisserArt schweisserArt
-        +ausgeben() void
+        -SchweisserArt _schweisserArt
+        +ToString() string
     }
-    Industrieroboter "1" o-- "0..10" Werkzeug : werkzeugKasten
+    class Statistik {
+        +int AnzahlBelegt
+        +int AnzahlFrei
+        +Werkzeug? StaerkstesWerkzeug
+        +double DurchschnittVerschleiss
+    }
+    Industrieroboter "1" o-- "0..10" Werkzeug : _werkzeugKasten
+    Industrieroboter ..> Statistik : erzeugt
     Werkzeug <|-- Bohrer
     Werkzeug <|-- Greifer
     Werkzeug <|-- Schweisser
@@ -67,13 +76,15 @@ classDiagram
 
 ```
 Industrieroboter/
-├── Industrieroboter.Domain/     Klassenbibliothek: Werkzeug, Bohrer, Greifer, Schweisser, Industrieroboter
-├── Industrieroboter.Konsole/    Konsolenanwendung: Menü und Benutzerinteraktion
+├── Industrieroboter.Domain/     Klassenbibliothek: Werkzeug, Bohrer, Greifer, Schweisser, Industrieroboter, Statistik
+├── Industrieroboter.Konsole/    Konsolenanwendung: Menü, Eingaben und sämtliche Ausgaben
 ├── Industrieroboter.Tests/      xUnit-Tests für das Domänenmodell
 └── global.json                  fixiert das .NET 9 SDK
 ```
 
 Das Domänenmodell kennt weder Konsole noch Tests – Konsole und Tests verweisen beide nur auf `Domain`.
+Im Domain-Projekt gibt es keinen einzigen `Console`-Aufruf: Es liefert nur Rückgabewerte, Objekte und Exceptions,
+die Konsolenanwendung entscheidet, was angezeigt wird.
 
 ## Starten
 
@@ -91,17 +102,35 @@ dotnet test
 
 ## Designentscheidungen
 
-- **Abstrakte Basisklasse & Polymorphie:** `Werkzeug.ausgeben()` ist abstrakt; der Werkzeugkasten speichert
-  `Werkzeug`-Referenzen, jede Unterklasse gibt sich selbst aus.
+- **Abstrakte Basisklasse & Polymorphie:** `Werkzeug` deklariert `public abstract override string ToString()`.
+  Damit muss jede Unterklasse ihre eigene Beschreibung liefern – ein vergessenes oder falsch geschriebenes
+  `ToString()` fällt schon beim Kompilieren auf. Der Werkzeugkasten speichert `Werkzeug`-Referenzen,
+  jede Unterklasse beschreibt sich selbst.
+- **Domain ohne Konsole:** Roboter und Werkzeuge geben nichts aus, sondern liefern Daten. Dadurch ist die Logik
+  unabhängig von der Oberfläche und vollständig mit Unit-Tests prüfbar.
 - **Verantwortlichkeiten getrennt:** Der Roboter prüft Plätze, das Werkzeug kümmert sich um seinen Verschleiß,
   die Konsole um die Kommunikation mit dem Nutzer.
 - **Property als „Türsteher“:** `Verschleiss` hat ein `public get` und ein `private set`, das Werte außerhalb
   von 0–100 mit einer `ArgumentOutOfRangeException` ablehnt – auch schon im Konstruktor.
-- **Exceptions vs. Rückgabewert:** Ein nicht existierender Platz ist ein Aufruferfehler und wirft eine
-  `ArgumentOutOfRangeException`. Ein belegter bzw. leerer Platz ist ein normaler Geschäftsfall und wird über
-  den Rückgabewert `bool` gemeldet.
+- **Exceptions vs. Rückgabewert:** Ein nicht existierender Platz oder ein negativer Verschleißzuwachs ist ein
+  Aufruferfehler und wirft eine `ArgumentOutOfRangeException`. Ein belegter bzw. leerer Platz ist ein normaler
+  Geschäftsfall und wird über den Rückgabewert `bool` gemeldet – so ist jeder Rückgabewert eindeutig.
+- **Statistik als Momentaufnahme:** `StatistikBerechnen()` liefert ein unveränderliches `Statistik`-Objekt
+  (nur `get`, gesetzt im Konstruktor). Alle Werte stammen aus einer einzigen Berechnung und passen garantiert
+  zusammen.
 - **Enums mit Standardwert:** Die Bauform ist ein optionaler Konstruktorparameter, damit bestehende Aufrufe
   gültig bleiben.
+
+## Hinweis zur Benennung
+
+Das Klassendiagramm der ursprünglichen Aufgabenstellung gab Methodennamen in camelCase vor
+(z. B. `werkzeugHinzufuegen`). Die abgegebene Version hielt sich daran. Nach der Abgabe wurde der Code an die üblichen C#-Konventionen angepasst:
+
+- **Methoden und Properties** in PascalCase, z. B. `WerkzeugHinzufuegen`, `AnzahlPlaetze`
+- **private Felder** mit Unterstrich und camelCase, z. B. `_verschleiss`, `_werkzeugKasten`
+- **Parameter und lokale Variablen** in camelCase ohne Unterstrich, z. B. `platz`, `neu`
+
+Außerdem wurden die Konsolenausgaben aus dem Domänenmodell herausgelöst.
 
 ## Autor
 

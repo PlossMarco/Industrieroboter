@@ -9,7 +9,7 @@ public enum GreiferArt { Parallelgreifer, Vakuumgreifer, Magnetgreifer, Nadelgre
 public class Greifer : Werkzeug
 {
     /// <summary>Bauform des Greifers.</summary>
-    private GreiferArt greiferArt;
+    private GreiferArt _greiferArt;
 
     /// <summary>
     /// Erzeugt einen Greifer. Art und Verschleiß gehen per base(...) an Werkzeug.
@@ -19,12 +19,12 @@ public class Greifer : Werkzeug
     /// <param name="greiferArt">Bauform. Standardwert Parallelgreifer.</param>
     public Greifer(string art, int verschleiss, GreiferArt greiferArt = GreiferArt.Parallelgreifer) : base(art, verschleiss)
     {
-        this.greiferArt = greiferArt;
+        _greiferArt = greiferArt;
     }
 
-    /// <summary>Gibt z. B. "Magnetgreifer (Verschleiss y %)." aus.</summary>
+    /// <summary>Liefert z. B. "Magnetgreifer (Verschleiss y %)." zurück.</summary>
     public override string ToString()
     {
-        return $"{greiferArt} (Verschleiss {Verschleiss} %).";
+        return $"{_greiferArt} (Verschleiss {Verschleiss} %).";
     }
 }

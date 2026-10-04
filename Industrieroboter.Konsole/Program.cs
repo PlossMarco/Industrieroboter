@@ -31,7 +31,7 @@ do
             case 2:                             // Entfernen
                 int platzEntfernen = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
 
-                Werkzeug? entfernt = industrieroboter1.werkzeugAbrufen(platzEntfernen);
+                Werkzeug? entfernt = industrieroboter1.WerkzeugAbrufen(platzEntfernen);
                 EntfernenMitMeldung(industrieroboter1, platzEntfernen);
                 break;
             case 3:                             // Anzeigen
@@ -41,8 +41,8 @@ do
             case 4:                             // Benutzen
                 int platzBenutzen = ZahlEinlesen("Welches Werkzeug soll benutzt werden ? Platz(0 - 9) : ");
                 int wert = ZahlEinlesen("Um wie viel % soll der Verschleiss steigen? ");
-                bool genutzt = industrieroboter1.werkzeugBenutzen(platzBenutzen, wert);
-                Werkzeug? benutzt = industrieroboter1.werkzeugAbrufen(platzBenutzen);
+                bool genutzt = industrieroboter1.WerkzeugBenutzen(platzBenutzen, wert);
+                Werkzeug? benutzt = industrieroboter1.WerkzeugAbrufen(platzBenutzen);
 
                 if (genutzt)
                 {
@@ -56,8 +56,8 @@ do
 
             case 5:                             // Warten
                 int platzWarten = ZahlEinlesen("Welches Werkzeug soll gewartet werden? Platz (0 - 9):");
-                bool gewartet = industrieroboter1.werkzeugWarten(platzWarten);
-                Werkzeug? neu = industrieroboter1.werkzeugAbrufen(platzWarten);
+                bool gewartet = industrieroboter1.WerkzeugWarten(platzWarten);
+                Werkzeug? neu = industrieroboter1.WerkzeugAbrufen(platzWarten);
 
                 if (gewartet)
                 {
@@ -88,7 +88,7 @@ do
     }
     catch (ArgumentOutOfRangeException ex)
     {
-        // Die Meldung wurde bereits im Roboter formuliert und wird hier nur weitergegeben.
+        // Die Meldung steckt bereits in der Exception (formuliert im Domain-Projekt) und wird hier nur ausgegeben.
         Console.WriteLine(ex.Message);
     }
 }
@@ -242,7 +242,7 @@ int ZahlEinlesen(string frage)
 
 void HinzufuegenMitMeldung(Roboter roboter, int platz, Werkzeug neu)
 {
-    bool w = roboter.werkzeugHinzufuegen(platz, neu);
+    bool w = roboter.WerkzeugHinzufuegen(platz, neu);
     if (w)
     {
         Console.WriteLine($"Hinzugefügtes Werkzeug auf Platz {platz}: {neu}");
@@ -255,8 +255,8 @@ void HinzufuegenMitMeldung(Roboter roboter, int platz, Werkzeug neu)
 
 void EntfernenMitMeldung(Roboter roboter, int platzEntfernen)
 {
-    Werkzeug? entfernt = roboter.werkzeugAbrufen(platzEntfernen);
-    bool w = roboter.werkzeugEntfernen(platzEntfernen);
+    Werkzeug? entfernt = roboter.WerkzeugAbrufen(platzEntfernen);
+    bool w = roboter.WerkzeugEntfernen(platzEntfernen);
 
     if (w)
     {
@@ -272,7 +272,7 @@ void WerkzeugkastenAnzeigen(Roboter roboter)
 {
     for (int i = 0; i < roboter.AnzahlPlaetze; i++)
     {
-        Werkzeug? w = roboter.werkzeugAbrufen(i);
+        Werkzeug? w = roboter.WerkzeugAbrufen(i);
         if (w == null)
         {
             Console.WriteLine($"Platz {i}: leer");
@@ -286,7 +286,7 @@ void WerkzeugkastenAnzeigen(Roboter roboter)
 
 void StatistikAnzeigen(Roboter roboter)
 {
-    Statistik statistik = roboter.statistikBerechnen();
+    Statistik statistik = roboter.StatistikBerechnen();
 
         if (statistik.StaerkstesWerkzeug == null)
     {

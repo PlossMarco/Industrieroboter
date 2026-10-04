@@ -8,14 +8,16 @@ namespace Industrieroboter.Domain;
 public abstract class Werkzeug
 {
     /// <summary>Freitext-Bezeichnung der Werkzeugart (laut Klassendiagramm).</summary>
-    private string art;
+    private string _art;
+
+    /// <summary>Liefert die Freitext-Bezeichnung (nur lesbar).</summary>
     public string Art
     {
-        get { return art; }
+        get { return _art; }
     }
 
     /// <summary>Eigentliches Feld für den Verschleiß. Wird nur über die Property <see cref="Verschleiss"/> geschrieben.</summary>
-    private int verschleiss;
+    private int _verschleiss;
 
     /// <summary>
     /// Verschleiß in Prozent (0 = neu, 100 = komplett verschlissen).
@@ -25,20 +27,20 @@ public abstract class Werkzeug
     /// <exception cref="ArgumentOutOfRangeException">Wenn ein Wert außerhalb von 0–100 gesetzt werden soll.</exception>
     public int Verschleiss
     {
-        get { return verschleiss; }
+        get { return _verschleiss; }
         private set
         {
             if (value < 0 || value > 100)
             {
                 throw new ArgumentOutOfRangeException(nameof(value), "Verschleiss muss zwischen 0 und 100 liegen.");
             }
-            verschleiss = value;
+            _verschleiss = value;
         }
     }
 
     /// <summary>
-    /// Liefert eine Beschreibung des Werkzeugs auf der Konsole zurück.
-    /// Abstrakt: Jede Unterklasse muss selbst festlegen, wie sie sich ausgibt (Polymorphie).
+    /// Liefert eine Beschreibung des Werkzeugs als Text zurück (ersetzt die Standardversion von object).
+    /// abstract override: Jede Unterklasse muss ihre eigene Beschreibung liefern (Polymorphie).
     /// </summary>
     public abstract override string ToString();
 
@@ -50,16 +52,16 @@ public abstract class Werkzeug
     /// <param name="verschleiss">Startverschleiß in Prozent (0–100).</param>
     public Werkzeug(string art, int verschleiss)
     {
-        this.art = art;
-        this.Verschleiss = verschleiss;
+        _art = art;
+        Verschleiss = verschleiss;
     }
 
     /// <summary>
     /// Erhöht den Verschleiß um den angegebenen Wert, gedeckelt bei 100.
     /// </summary>
     /// <param name="wert">Zuwachs in Prozent. Negative Werte sind fachlich unsinnig und werden abgelehnt.</param>
-    /// <returns>true, wenn der Verschleiß erhöht wurde; false bei negativem Wert.</returns>
-    public void benutzen(int wert)
+    /// <exception cref="ArgumentOutOfRangeException">Wenn der Wert negativ ist (Aufruferfehler).</exception>
+    public void Benutzen(int wert)
     {
 
         // Guard Clause: Durch Benutzen wird ein Werkzeug nie "besser".
@@ -68,13 +70,13 @@ public abstract class Werkzeug
             throw new ArgumentOutOfRangeException(nameof(wert), "Der Verschleiss muss im positiven Bereich liegen!");
         }
         // Math.Min nimmt den kleineren Wert -> alles über 100 wird auf 100 gedeckelt.
-        Verschleiss = Math.Min(verschleiss + wert, 100);
+        Verschleiss = Math.Min(_verschleiss + wert, 100);
     }
 
     /// <summary>
     /// Wartet das Werkzeug, d. h. setzt den Verschleiß auf 0 zurück.
     /// </summary>
-    public void warten()
+    public void Warten()
     {
         Verschleiss = 0;
     }

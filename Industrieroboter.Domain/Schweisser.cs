@@ -9,7 +9,7 @@ public enum SchweisserArt { Punktschweissen, Schutzgasschweissen, WigSchweissen,
 public class Schweisser : Werkzeug
 {
     /// <summary>Schweißverfahren des Schweissers.</summary>
-    private SchweisserArt schweisserArt;
+    private SchweisserArt _schweisserArt;
 
     /// <summary>
     /// Erzeugt einen Schweisser. Art und Verschleiß gehen per base(...) an Werkzeug.
@@ -19,12 +19,12 @@ public class Schweisser : Werkzeug
     /// <param name="schweisserArt">Schweißverfahren. Standardwert Punktschweissen.</param>
     public Schweisser(string art, int verschleiss, SchweisserArt schweisserArt = SchweisserArt.Punktschweissen) : base(art, verschleiss)
     {
-        this.schweisserArt = schweisserArt;
+        _schweisserArt = schweisserArt;
     }
 
-    /// <summary>Gibt z. B. "Laserschweissen (Verschleiss y %)." aus.</summary>
+    /// <summary>Liefert z. B. "Laserschweissen (Verschleiss y %)." zurück.</summary>
     public override string ToString()
     {
-        return $"{schweisserArt} (Verschleiss {Verschleiss} %).";
+        return $"{_schweisserArt} (Verschleiss {Verschleiss} %).";
     }
 }
