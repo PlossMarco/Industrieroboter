@@ -78,7 +78,7 @@ do
                 break;
 
             case 8:                             // Statistik
-                industrieroboter1.werkzeugStatistik();
+                StatistikAnzeigen(industrieroboter1);
                 break;
 
             default:                            // ungültige Menüauswahl
@@ -281,5 +281,21 @@ void WerkzeugkastenAnzeigen(Roboter roboter)
         {
             Console.WriteLine($"Platz {i}: {w}");
         }
+    }
+}
+
+void StatistikAnzeigen(Roboter roboter)
+{
+    Statistik statistik = roboter.statistikBerechnen();
+
+        if (statistik.StaerkstesWerkzeug == null)
+    {
+        Console.WriteLine("Keine Werkzeuge vorhanden.");
+    }
+    else
+    {
+        Console.WriteLine($"Der Durchschnittliche Verschleiss beträgt: {statistik.DurchschnittVerschleiss:0.0}");
+        Console.WriteLine($"Plätze \tfrei: \t{statistik.AnzahlFrei}\tbelegt: \t{statistik.AnzahlBelegt}");
+        Console.WriteLine($"Das Werkzeug mit dem größten Verschleiss ist: {statistik.StaerkstesWerkzeug}");
     }
 }

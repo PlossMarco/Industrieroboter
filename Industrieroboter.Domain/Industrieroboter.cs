@@ -141,7 +141,7 @@ namespace Industrieroboter.Domain
         /// Gibt eine Statistik aus: durchschnittlicher Verschleiß aller vorhandenen Werkzeuge,
         /// Anzahl belegter/freier Plätze und das am stärksten verschlissene Werkzeug.
         /// </summary>
-        public void werkzeugStatistik()
+        public Statistik statistikBerechnen()
         {
             // Variablen, die beim Durchlaufen fortgeschrieben werden
             int frei = 0;
@@ -167,22 +167,17 @@ namespace Industrieroboter.Domain
 
             int belegt = maxAnzWerkzeuge - frei;
 
-            // Sonderfall leerer Kasten: kein Fehler, sondern normaler Zustand -> Meldung statt Division durch 0.
-            // (staerkstes == null ist gleichbedeutend mit belegt == 0, aber der Compiler erkennt so,
-            //  dass staerkstes weiter unten nicht null sein kann.)
-            if (staerkstes == null)
+            double durchschnittVerschleiss = 0;
+            
+
+            if (belegt > 0)
             {
-                Console.WriteLine("Keine Werkzeuge vorhanden.");
-                        return;
+                durchschnittVerschleiss = (double)verschleissGesamt / belegt;
             }
 
-            // Cast auf double, damit nicht ganzzahlig geteilt (abgerundet) wird.
-            double durchschnittVerschleiss = (double)verschleissGesamt / belegt;
+            return new Statistik(belegt, frei, staerkstes, durchschnittVerschleiss);
 
-            Console.WriteLine($"der durchschnittliche Verschleiss aller Werkzeuge liegt bei: \t\t{durchschnittVerschleiss:0.0}");
-            Console.WriteLine($"Anzahl der Plätze \tbelegt: {belegt}\tfrei: {frei}");
-            Console.WriteLine($"das am stärksten verschlissene Werkzeug ist: ");
-        Console.WriteLine(staerkstes);
+
 
         }
 
