@@ -77,7 +77,7 @@ classDiagram
 ```
 Industrieroboter/
 ├── Industrieroboter.Domain/     Klassenbibliothek: Werkzeug, Bohrer, Greifer, Schweisser, Industrieroboter, Statistik
-├── Industrieroboter.Konsole/    Konsolenanwendung: Menü, Eingaben und sämtliche Ausgaben
+├── Industrieroboter.Konsole/    Konsolenanwendung: Menü (Enums MenuePunkt, WerkzeugTyp), Eingaben und sämtliche Ausgaben
 ├── Industrieroboter.Tests/      xUnit-Tests für das Domänenmodell
 └── global.json                  fixiert das .NET 9 SDK
 ```
@@ -120,6 +120,9 @@ dotnet test
   zusammen.
 - **Enums mit Standardwert:** Die Bauform ist ein optionaler Konstruktorparameter, damit bestehende Aufrufe
   gültig bleiben.
+- **Menü über Enums statt „magischer Zahlen“:** Haupt- und Untermenü verwenden `MenuePunkt` bzw. `WerkzeugTyp`
+  (`case MenuePunkt.Benutzen:` statt `case 4:`). Die Auswahltexte werden per `Enum.GetValues` automatisch aus den
+  Enums erzeugt, sodass jede Liste von Optionen nur an einer Stelle gepflegt wird.
 
 ## Hinweis zur Benennung
 

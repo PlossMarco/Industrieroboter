@@ -1,11 +1,11 @@
 // Konsolenanwendung zur Verwaltung eines Industrieroboters (Aufgabe 2).
 // Program.cs ist für die Kommunikation mit dem Nutzer zuständig (Eingaben, Menüs, Fehlermeldungen);
 // die eigentliche Logik liegt im Domain-Projekt.
-using System.ComponentModel.Design;
 using Industrieroboter.Domain;
+using Industrieroboter.Konsole;
 using Roboter = Industrieroboter.Domain.Industrieroboter;
 
-// Steuert die Menüschleife; wird nur bei "6 = Beenden" auf false gesetzt.
+// Steuert die Menüschleife; wird nur bei MenuePunkt.Beenden auf false gesetzt.
 bool checkMenue = true;
 
 // Ein Roboter für die gesamte Laufzeit (vor der Schleife), damit Werkzeuge zwischen den Menüpunkten erhalten bleiben.
@@ -16,29 +16,30 @@ Roboter industrieroboter1 = new Roboter();
 do
 {
     Console.WriteLine("=== Werkzeugkasten-Verwaltung ===");
-    int menueAuswahl = ZahlEinlesen("1 = Hinzufügen | 2 = Entfernen | 3 = Anzeigen | 4 = Benutzen | 5 = Warten | 6 = Beenden | 7 = Testprogramm | 8 = Statistik");
+    // Der Menütext wird aus dem Enum erzeugt – die Liste der Menüpunkte existiert nur an einer Stelle (DRY).
+    int menueAuswahl = ZahlEinlesen(AuswahlText<MenuePunkt>());
 
     // Ein try/catch um den ganzen switch (DRY): fängt ungültige Plätze aus allen Menüpunkten ab,
     // damit das Programm nicht abstürzt und der Nutzer es erneut versuchen kann.
     try
     {
-
-        switch (menueAuswahl)
+        // Cast der Zahl in das Enum: ungültige Zahlen (z. B. 9) stürzen nicht ab, sondern landen im default.
+        switch ((MenuePunkt)menueAuswahl)
         {
-            case 1:                             // Hinzufügen
+            case MenuePunkt.Hinzufuegen:
                 WerkzeugHinzufuegenMenue();
                 break;
-            case 2:                             // Entfernen
-                int platzEntfernen = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
 
-                Werkzeug? entfernt = industrieroboter1.WerkzeugAbrufen(platzEntfernen);
+            case MenuePunkt.Entfernen:
+                int platzEntfernen = ZahlEinlesen("Wählen Sie von welchem Platz Sie das Werkzeug entfernen möchten (0 - 9)");
                 EntfernenMitMeldung(industrieroboter1, platzEntfernen);
                 break;
-            case 3:                             // Anzeigen
+
+            case MenuePunkt.Anzeigen:
                 WerkzeugkastenAnzeigen(industrieroboter1);
                 break;
 
-            case 4:                             // Benutzen
+            case MenuePunkt.Benutzen:
                 int platzBenutzen = ZahlEinlesen("Welches Werkzeug soll benutzt werden ? Platz(0 - 9) : ");
                 int wert = ZahlEinlesen("Um wie viel % soll der Verschleiss steigen? ");
                 bool genutzt = industrieroboter1.WerkzeugBenutzen(platzBenutzen, wert);
@@ -54,7 +55,7 @@ do
                 }
                 break;
 
-            case 5:                             // Warten
+            case MenuePunkt.Warten:
                 int platzWarten = ZahlEinlesen("Welches Werkzeug soll gewartet werden? Platz (0 - 9):");
                 bool gewartet = industrieroboter1.WerkzeugWarten(platzWarten);
                 Werkzeug? neu = industrieroboter1.WerkzeugAbrufen(platzWarten);
@@ -69,20 +70,20 @@ do
                 }
                 break;
 
-            case 6:                             // Beenden
+            case MenuePunkt.Beenden:
                 checkMenue = false;
                 break;
 
-            case 7:                             // Testprogramm (Aufgabe 1.2)
+            case MenuePunkt.Testprogramm:       // Aufgabe 1.2
                 Testprogramm();
                 break;
 
-            case 8:                             // Statistik
+            case MenuePunkt.Statistik:
                 StatistikAnzeigen(industrieroboter1);
                 break;
 
             default:                            // ungültige Menüauswahl
-                Console.WriteLine("Die Eingabe muss eine Zahl zwischen 1 und 8 sein");
+                Console.WriteLine($"Die Eingabe muss eine Zahl zwischen 1 und {Enum.GetValues<MenuePunkt>().Length} sein");
                 break;
         }
     }
@@ -152,20 +153,20 @@ void WerkzeugHinzufuegenMenue()
 {
     int platz = ZahlEinlesen("Geben Sie den Platz ein, an dem Sie das gewünschte Werkzeug hinzufügen möchten (0 - 9)");
 
-    int artAuswahl = ZahlEinlesen("Wählen Sie die Art des Werkzeuges 1 = Bohrer | 2 = Greifer | 3 = Schweisser");
+    int artAuswahl = ZahlEinlesen("Wählen Sie die Art des Werkzeuges: " + AuswahlText<WerkzeugTyp>());
 
     // Typ Werkzeug (Basisklasse), damit jede Unterklasse hineinpasst;
     // "?" weil bei ungültiger Auswahl kein Werkzeug entsteht.
     Werkzeug? neu = null;
 
-    switch (artAuswahl)
+    switch ((WerkzeugTyp)artAuswahl)
     {
-        case 1:
+        case WerkzeugTyp.Bohrer:
             int groesse = ZahlEinlesen("Geben Sie die Größe des Bohrers ein (1 - 10).");
 
-            // Nutzer zählt ab 1, Enum ab 0 -> "- 1". Der Cast stürzt bei ungültigen Zahlen nicht ab,
-            // deshalb wird anschließend mit Enum.IsDefined geprüft.
-            int bohrerArtAuswahl = ZahlEinlesen("Bohrerart: 1 = Spiralbohrer | 2 = Stufenbohrer | 3 = Kernbohrer | 4 = Gewindebohrer");
+            // Die Bauform-Enums der Domain beginnen bei 0, der Nutzer zählt ab 1 -> Versatz 1 bzw. "- 1".
+            // Der Cast stürzt bei ungültigen Zahlen nicht ab, deshalb wird anschließend mit Enum.IsDefined geprüft.
+            int bohrerArtAuswahl = ZahlEinlesen("Bohrerart: " + AuswahlText<BohrerArt>(1));
             BohrerArt bohrerArt = (BohrerArt)(bohrerArtAuswahl - 1);
 
             if (!Enum.IsDefined(bohrerArt))
@@ -178,8 +179,8 @@ void WerkzeugHinzufuegenMenue()
 
             break;
 
-        case 2:
-            int greiferArtAuswahl = ZahlEinlesen("Greiferart: 1 = Parallelgreifer | 2 = Vakuumgreifer | 3 = Magnetgreifer | 4 = Nadelgreifer ");
+        case WerkzeugTyp.Greifer:
+            int greiferArtAuswahl = ZahlEinlesen("Greiferart: " + AuswahlText<GreiferArt>(1));
             GreiferArt greiferArt = (GreiferArt)(greiferArtAuswahl - 1);
 
             if (!Enum.IsDefined(greiferArt))
@@ -192,8 +193,8 @@ void WerkzeugHinzufuegenMenue()
 
             break;
 
-        case 3:
-            int schweisserArtAuswahl = ZahlEinlesen("Schweisserart: 1 = Punktschweissen | 2 = Schutzgasschweissen | 3 = WigSchweissen | 4 = Laserschweissen ");
+        case WerkzeugTyp.Schweisser:
+            int schweisserArtAuswahl = ZahlEinlesen("Schweisserart: " + AuswahlText<SchweisserArt>(1));
             SchweisserArt schweisserArt = (SchweisserArt)(schweisserArtAuswahl - 1);
 
             if (!Enum.IsDefined(schweisserArt))
@@ -215,6 +216,17 @@ void WerkzeugHinzufuegenMenue()
     {
         HinzufuegenMitMeldung(industrieroboter1, platz, neu);
     }
+}
+
+/// <summary>
+/// Erzeugt aus einem beliebigen Enum einen Auswahltext wie "1 = Hinzufuegen | 2 = Entfernen | …".
+/// So muss die Liste der Optionen nirgends von Hand gepflegt werden.
+/// </summary>
+/// <typeparam name="T">Das Enum, dessen Werte angezeigt werden.</typeparam>
+/// <param name="versatz">Wird zur Enum-Zahl addiert – nötig für Enums, die bei 0 beginnen (Nutzer zählt ab 1).</param>
+string AuswahlText<T>(int versatz = 0) where T : struct, Enum
+{
+    return string.Join(" | ", Enum.GetValues<T>().Select(wert => $"{Convert.ToInt32(wert) + versatz} = {wert}"));
 }
 
 /// <summary>
