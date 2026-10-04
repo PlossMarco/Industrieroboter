@@ -220,4 +220,33 @@ public class IndustrieroboterTests
         // Assert: Ergebnis prüfen
         Assert.Equal("B-01", bohrer.Art);
     }
+    // ---------- Statistik ----------
+
+
+    [Fact]
+    public void Statistik_LeererKasten_KeinWerkzeug()
+    {
+        Roboter roboter = new Roboter();
+
+        Statistik statistik = roboter.statistikBerechnen();
+
+        Assert.Null(statistik.StaerkstesWerkzeug);
+    }
+
+    [Fact]
+    public void Statistik_ZweiWerkzeuge_WerteKorrekt()
+    {
+        Roboter roboter = new Roboter();
+        roboter.werkzeugHinzufuegen(5, new Bohrer("bohrer", 20, 0));
+        Bohrer bohrer = new Bohrer("bohrer2", 60, 0);
+        roboter.werkzeugHinzufuegen(2, bohrer);
+        Statistik statistik = roboter.statistikBerechnen();
+
+
+        Assert.Same(bohrer, statistik.StaerkstesWerkzeug);
+        Assert.Equal(40, statistik.DurchschnittVerschleiss);
+        Assert.Equal(2, statistik.AnzahlBelegt);
+    }
 }
+
+
