@@ -1,6 +1,7 @@
 // Konsolenanwendung zur Verwaltung eines Industrieroboters (Aufgabe 2).
 // Program.cs ist für die Kommunikation mit dem Nutzer zuständig (Eingaben, Menüs, Fehlermeldungen);
 // die eigentliche Logik liegt im Domain-Projekt.
+using System.ComponentModel.Design;
 using Industrieroboter.Domain;
 using Roboter = Industrieroboter.Domain.Industrieroboter;
 
@@ -34,7 +35,7 @@ do
                 EntfernenMitMeldung(industrieroboter1, platzEntfernen);
                 break;
             case 3:                             // Anzeigen
-                industrieroboter1.werkzeugAnzeigen();
+                WerkzeugkastenAnzeigen(industrieroboter1);
                 break;
 
             case 4:                             // Benutzen
@@ -264,5 +265,21 @@ void EntfernenMitMeldung(Roboter roboter, int platzEntfernen)
     else
     {
         Console.WriteLine($"Entfernen nicht möglich, da Platz {platzEntfernen} nicht belegt ist.");
+    }
+}
+
+void WerkzeugkastenAnzeigen(Roboter roboter)
+{
+    for (int i = 0; i < roboter.AnzahlPlaetze; i++)
+    {
+        Werkzeug? w = roboter.werkzeugAbrufen(i);
+        if (w == null)
+        {
+            Console.WriteLine($"Platz {i}: leer");
+        }
+        else
+        {
+            Console.WriteLine($"Platz {i}: {w}");
+        }
     }
 }

@@ -10,7 +10,16 @@ namespace Industrieroboter.Domain
     public class Industrieroboter
     {
         /// <summary>Anzahl der Plätze im Werkzeugkasten. static: gilt für alle Roboter gemeinsam; readonly: unveränderlich.</summary>
+
         private static readonly int maxAnzWerkzeuge = 10;
+
+        public int AnzahlPlaetze 
+        {
+            get {
+                return maxAnzWerkzeuge;
+        }
+
+        }
 
         /// <summary>
         /// Der Werkzeugkasten. Plätze 0 bis maxAnzWerkzeuge-1.
@@ -64,27 +73,6 @@ namespace Industrieroboter.Domain
                 werkzeugKasten[platz] = null;
 
                 return true;
-            }
-        }
-
-        /// <summary>
-        /// Gibt für jeden Platz entweder das Werkzeug (über ausgeben()) oder "Platz x: leer" aus.
-        /// </summary>
-        public void werkzeugAnzeigen()
-        {
-            for (int i = 0; i < maxAnzWerkzeuge; i++)
-            {
-                Werkzeug? w = werkzeugKasten[i];
-
-                if (w != null)
-                {
-                    Console.WriteLine($"Platz {i}: ");
-                    Console.WriteLine(w); // polymorph: Bohrer, Greifer oder Schweisser gibt sich selbst aus
-                }
-                else
-                {
-                    Console.WriteLine($"Platz {i}: leer");
-                }
             }
         }
 
