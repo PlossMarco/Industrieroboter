@@ -1,0 +1,36 @@
+# Continuous Integration: Bei jedem Push und jedem Pull Request auf main
+# wird die Solution auf einem frischen GitHub-Server gebaut und alle Unit-Tests ausgeführt.
+name: Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Den Code des Repositorys auf den Server holen
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      # 2. Das .NET 9 SDK installieren (passend zur global.json)
+      - name: .NET 9 einrichten
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # 3. NuGet-Pakete wiederherstellen (z. B. xUnit)
+      - name: Abhängigkeiten wiederherstellen
+        run: dotnet restore
+
+      # 4. Alles bauen – Warnungen werden hier wie Fehler behandelt, damit der Code sauber bleibt
+      - name: Bauen
+        run: dotnet build --no-restore --configuration Release -warnaserror
+
+      # 5. Alle Unit-Tests ausführen – schlägt ein Test fehl, wird der Lauf rot
+      - name: Tests ausführen
+        run: dotnet test --no-build --configuration Release --verbosity normal

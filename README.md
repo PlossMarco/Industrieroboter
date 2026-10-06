@@ -1,5 +1,7 @@
 # Industrieroboter – Werkzeugkasten-Verwaltung
 
+[![Build & Test](https://github.com/PlossMarco/Industrieroboter/actions/workflows/dotnet.yml/badge.svg)](https://github.com/PlossMarco/Industrieroboter/actions/workflows/dotnet.yml)
+
 Konsolenanwendung in **C# / .NET 9** zur Verwaltung des Werkzeugkastens eines Industrieroboters.
 Entstanden als Projektaufgabe in meiner Umschulung – mit Fokus auf objektorientiertem Design,
 sauberer Fehlerbehandlung und automatisierten Tests.
@@ -99,6 +101,9 @@ Tests ausführen:
 ```bash
 dotnet test
 ```
+
+Bei jedem Push auf `main` baut **GitHub Actions** die Solution automatisch und führt alle Tests aus
+(siehe `.github/workflows/dotnet.yml`). Das Badge oben zeigt den Stand des letzten Laufs.
 
 ## Designentscheidungen
 
